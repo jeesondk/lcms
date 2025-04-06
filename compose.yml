@@ -1,0 +1,15 @@
+version: '3.9'
+
+volumes:
+  lcms:
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres-lcms
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - lcms:/var/lib/postgresql/data
