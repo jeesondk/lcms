@@ -3,11 +3,11 @@ import { saveContent } from '@/db/repositories/contentRepository';
 
 
 export async function POST(req: NextRequest) {
-  const { content: body, contentId } = await req.json();
-    console.log('Received contentId:', contentId);
+  const { content: body, id } = await req.json();
+    console.log('Received contentId:', id);
     console.log('Received content:', body);
 
-    if (!contentId) {
+    if (!id) {
         return NextResponse.json({ error: 'Invalid contentId' }, { status: 400 });
     }
 
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Invalid content' }, { status: 400 });
     }
 
-    saveContent(contentId, body)
+    saveContent(id, body)
         .then((result) => {
             console.log('Content saved:', result);
         })

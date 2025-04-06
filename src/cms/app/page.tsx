@@ -13,7 +13,7 @@ export default function Home() {
   });
 
   // State to manage the selected page and content
-  const [selected, setSelected] = useState<{ pageId: number; contentId: number } | null>(null);
+  const [selected, setSelected] = useState<{ pageId: number; contentId: number, isoLanguage: string } | null>(null);
 
   // Fetch the taxonomy data from the server
    useEffect(() => {
@@ -35,8 +35,7 @@ export default function Home() {
       <SidebarTree
         tree={tree}
         onSelectContent={(pageId, isoLanguage, contentIds) => {
-          // Load into editor
-          console.log("Selected content:", pageId, isoLanguage, contentIds);
+          setSelected({ pageId, contentId: contentIds[0], isoLanguage });
         }}
         onAddPage={(path) => console.log("Add page under path:", path)}
         onEditPage={(pageId) => console.log("Edit page", pageId)}

@@ -3,15 +3,13 @@ import { getContentById } from '@/db/repositories/contentRepository';
 
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
-    const pageId = Number(searchParams.get('pageId'));
-    const contentId = Number(searchParams.get('contentId'));
+    const id = Number(searchParams.get('id'));
 
-    if(!pageId || !contentId) {
-        return NextResponse.json({ error: 'Invalid pageId or contentId' }, { status: 400 });
+    if(!id) {
+        return NextResponse.json({ error: 'Invalid contentId' }, { status: 400 });
     }
-    console.log('Received pageId:', pageId);
     
-    const content = await getContentById(pageId, contentId);
+    const content = await getContentById(id);
 
     if (!content) {
         return NextResponse.json({ error: 'Content not found' }, { status: 404 });

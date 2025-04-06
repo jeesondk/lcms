@@ -8,17 +8,16 @@ export default function SaveButton({contentId}: {contentId: number}) {
 
     const handleSave = useCallback(() => {
       editor.update(() => {
-        const editorState = editor.getEditorState();
-        const json = editorState.toJSON();
+        const editorStateJSON = editor.getEditorState().toJSON();
   
-        fetch('/api/save-content', {
+        fetch('/api/editor/save-content', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            contentId: contentId,
-            content: json,
+            id: contentId,
+            content: editorStateJSON,
           }),
         }).then(() => {
           alert('Content saved!');

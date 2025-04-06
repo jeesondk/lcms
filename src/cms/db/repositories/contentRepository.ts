@@ -12,11 +12,11 @@ export async function getPageContent(pageId: number) {
     return result;
 }
 
-export async function getContentById(pageId: number, contentId: number) {
+export async function getContentById(contentId: number) {
     const result = await db
         .select()
         .from(content)
-        .where(and(eq(content.pageId, pageId), eq(content.id, contentId)))
+        .where(eq(content.id, contentId))
         .execute();
     return result[0];
 }

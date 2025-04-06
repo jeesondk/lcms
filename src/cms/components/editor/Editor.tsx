@@ -28,11 +28,14 @@ import {
 
 import ExampleTheme from './Theme';
 import { ToolbarPlugin } from './plugins/ToolbarPlugin';
-import { TreeViewPlugin } from './plugins/TreeViewPlugin';
 import {parseAllowedColor, parseAllowedFontSize} from './styleConfig';
 import SaveButton from './SaveButton';
+import { AutoSavePlugin } from './plugins/AutoSavePlugin';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { useEffect } from 'react';
+import EditorLoader from './EditorLoader';
 
-const placeholder = 'Enter some rich text...';
+const placeholder = 'Start typing...';
 
 const removeStylesExportDOM = (
   editor: LexicalEditor,
@@ -152,21 +155,19 @@ export default function Editor({
       <div className="editor-container">
         <ToolbarPlugin />
         <div className="editor-inner">
+          
           <RichTextPlugin
             contentEditable={
-              <ContentEditable
-                className="editor-input"
+              <ContentEditable className="editor-input"
                 aria-placeholder={placeholder}
-                placeholder={
-                  <div className="editor-placeholder">{placeholder}</div>
-                }
-              />
-            }
+                placeholder={<div className="editor-placeholder">{placeholder}</div>}/>}
             ErrorBoundary={LexicalErrorBoundary}
           />
+
+          <EditorLoader contentId={contentId} />
           <HistoryPlugin />
           <AutoFocusPlugin />
-          {/* <TreeViewPlugin /> */}
+          <AutoSavePlugin contentId={contentId} interval={10000} /> {/* every 10 seconds */}
         </div>
         <SaveButton contentId={contentId} />
       </div>
