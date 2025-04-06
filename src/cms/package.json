@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.1",
     "@lexical/react": "^0.29.0",
     "@libsql/client": "^0.15.2",
     "@phosphor-icons/react": "^2.1.7",

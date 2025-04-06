@@ -7,10 +7,9 @@ import { $getRoot } from 'lexical';
 type AutoSavePluginProps = {
   contentId: number;
   interval?: number;
-  onSave?: (timestamp: string) => void;
 };
 
-export function AutoSavePlugin({ contentId, interval = 5000, onSave }: AutoSavePluginProps) {
+export function AutoSavePlugin({ contentId, interval = 5000 }: AutoSavePluginProps) {
   const [editor] = useLexicalComposerContext();
   const lastSavedStateRef = useRef<string | null>(null);
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
