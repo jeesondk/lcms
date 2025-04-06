@@ -14,7 +14,7 @@ import {
 
 type SidebarTreeProps = {
   tree: TreeNode;
-  onSelectContent: (pageId: number, isoLanguage: string, contentIds: number[]) => void;
+  onSelectContent: (pageId: number, isoLanguage: string, contentIds: number[], type: string) => void;
   onAddPage: (parentPath: string) => void;
   onEditPage: (pageId: number) => void;
   onDeletePage: (pageId: number) => void;
@@ -33,11 +33,15 @@ export function SidebarTree({
   onEditContent,
   onDeleteContent,
 }: SidebarTreeProps) {
-  const [selected, setSelected] = useState<{ pageId: number; isoLanguage: string } | null>(null);
+  const [selected, setSelected] = useState<{
+    pageId: number;
+    isoLanguage: string;
+    contentId?: number;
+  } | null>(null);
 
-  const handleSelect = (pageId: number, isoLanguage: string, contentIds: number[]) => {
-    setSelected({ pageId, isoLanguage });
-    onSelectContent(pageId, isoLanguage, contentIds);
+  const handleSelect = (pageId: number, isoLanguage: string, contentIds: number[], type: string) => {
+    setSelected({ pageId, isoLanguage, contentId: contentIds[0] }); // assuming one selected at a time
+    onSelectContent(pageId, isoLanguage, contentIds, type);
   };
 
   return (
@@ -60,7 +64,7 @@ export function SidebarTree({
 
 type TreeNodeItemProps = {
   node: TreeNode;
-  onSelectContent: (pageId: number, isoLanguage: string, contentIds: number[]) => void;
+  onSelectContent: (pageId: number, isoLanguage: string, contentIds: number[], type: string) => void;
   selected: { pageId: number; isoLanguage: string } | null;
   level: number;
   onAddPage: (path: string) => void;
@@ -83,29 +87,32 @@ function TreeNodeItem({
   onEditContent,
   onDeleteContent,
 }: TreeNodeItemProps) {
+  const isContentItem = !!node.isContentItem;
+  const isLanguageNode = !!node.pageId && !!node.isoLanguage && !isContentItem;
+
+  const isSelected =
+    isContentItem &&
+    selected?.pageId === node.pageId &&
+    selected?.isoLanguage === node.isoLanguage;
   const [open, setOpen] = useState(true);
 
   const isLeaf = !node.children || node.children.length === 0;
-  const isLanguageNode = !!node.pageId && !!node.isoLanguage;
-
-  const isSelected =
-    isLanguageNode &&
-    selected?.pageId === node.pageId &&
-    selected?.isoLanguage === node.isoLanguage;
 
   const handleClick = () => {
-    if (isLanguageNode && node.pageId && node.isoLanguage) {
-      onSelectContent(node.pageId, node.isoLanguage, node.contentIds || []);
+    if (isContentItem && node.pageId && node.isoLanguage && node.contentId != null) {
+      onSelectContent(node.pageId, node.isoLanguage, [node.contentId], 'string');
     } else {
       setOpen(!open);
     }
   };
 
-  const icon = isLanguageNode ? (
-    <FileText size={16} weight="regular" />
-  ) : (
-    <Folder size={16} weight="regular" />
-  );
+  const icon = isContentItem ? (
+      <FileText size={14} />
+    ) : isLanguageNode ? (
+      <Folder size={14} />
+    ) : (
+      <Folder size={16} weight="regular" />
+    );
 
   return (
     <div className="pl-2">
@@ -122,8 +129,16 @@ function TreeNodeItem({
           </span>
         )}
         {icon}
-        <span className={`${isLanguageNode ? 'text-blue-600 cursor-pointer' : 'font-medium'}`}>
-          {node.name}
+        <span
+          className={`${
+            isContentItem
+              ? 'text-green-700 cursor-pointer'
+              : isLanguageNode
+              ? 'text-blue-600 cursor-pointer'
+              : 'font-medium'
+              }`}
+            >
+              {node.name}
         </span>
 
         <div className="ml-auto hidden group-hover:flex gap-1">

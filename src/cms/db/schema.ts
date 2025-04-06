@@ -7,15 +7,14 @@ export const taxonomy = pgTable("taxonomy", {
   path: varchar({ length: 512 }).notNull()});
 
 export const pages = pgTable("pages", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  taxonomyId: integer().notNull().references(() => taxonomy.id),
-  name: varchar({ length: 255 }).notNull(),
+  id: integer().notNull().references(() => taxonomy.id).primaryKey(),
   content: integer().array().notNull().default([]),
   iso_language: varchar({ length: 10 }).notNull(),});
   
 export const content = pgTable("content", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   key: varchar({ length: 255 }).notNull(),
+  type: varchar({ length: 10 }).notNull().default("rich"), // "rich" | "string"
   value: jsonb().notNull(),
   pageId: integer().notNull().references(() => pages.id),
 });
@@ -29,7 +28,7 @@ export const contentRelations = relations(content, ({ one }) => ({
 
 export const pagesRelations = relations(pages, ({ one }) => ({
   taxonomy: one(taxonomy, {
-    fields: [pages.taxonomyId],
+    fields: [pages.id],
     references: [taxonomy.id],
   }),
 }));

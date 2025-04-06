@@ -38,3 +38,17 @@ export async function saveContent(contentId: number, contentData: string) {
     }
     
 }
+
+export async function addContent(pageId: number, key: string, value: string) {
+    try {
+        const newContent = await db.insert(content).values({
+            pageId,
+            key,
+            value,
+        }).returning();
+        return newContent[0];
+    } catch (error) {
+        console.error('Error adding content:', error);
+        throw error;
+    }
+}

@@ -8,7 +8,7 @@ type AddItemModalProps = {
   isOpen: boolean;
   onClose: () => void;
   type: 'page' | 'content';
-  onSubmit: (formData: { name: string; language?: string }) => void;
+  onSubmit: (formData: { name: string; value?: string; type?: 'rich' | 'string' }) => void;
   targetPath?: string;
 };
 
@@ -20,13 +20,15 @@ export default function AddItemModal({
   targetPath = '',
 }: AddItemModalProps) {
   const [name, setName] = useState('');
-  const [language, setLanguage] = useState('');
+  const [value, setValue] = useState('');
+  const [richText, setRichText] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ name, language });
+    onSubmit({ name, value, type: richText ? 'rich' : 'string' });
     setName('');
-    setLanguage('');
+    setValue('');
+    setRichText(false);
     onClose();
   };
 
@@ -56,15 +58,24 @@ export default function AddItemModal({
                 />
                 {type === 'content' && (
                   <>
-                    <label className="block mb-2 text-sm font-medium">Language</label>
+                    <label className="block mb-2 text-sm font-medium">Value</label>
                     <input
                       type="text"
-                      value={language}
-                      onChange={(e) => setLanguage(e.target.value)}
+                      value={value}
+                      onChange={(e) => setValue(e.target.value)}
                       required
                       placeholder="e.g. en, nl"
                       className="w-full border rounded p-2 mb-4"
                     />
+                    <div className="flex items-center gap-2 mb-4">
+                      <input
+                        type="checkbox"
+                        id="richText"
+                        checked={richText}
+                        onChange={(e) => setRichText(e.target.checked)}
+                      />
+                      <label htmlFor="richText" className="text-sm">Rich Text</label>
+                    </div>
                   </>
                 )}
                 <div className="flex justify-end gap-2">
