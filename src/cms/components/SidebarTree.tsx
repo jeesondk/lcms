@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { TreeNode } from '@/types/tree';
+import { TreeNode } from '@/types/treeNode';
 import {
   FileText,
   Folder,
